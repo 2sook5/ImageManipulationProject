@@ -9,13 +9,13 @@ import javax.imageio.ImageIO;
 
 /**
  * Purpose of this project is to create an application which is able to modify
- * images
- * as well as create new images using 2D Arrays.
+ * images as well as create new images using 2D Arrays.
  * 
  * @author Issac Lopez
  */
 
 public class ImageProcessing {
+
     /**
      * Main method can load image data into a 2D array of ints using the imgToTwoD()
      * method.
@@ -23,13 +23,14 @@ public class ImageProcessing {
      * @param args
      */
     public static void main(String[] args) {
-        // load image using URL.
+        // Load image using URL.
         int[][] imageData = imgToTwoD(
                 "https://content.codecademy.com/projects/project_thumbnails/phaser/bug-dodger.png");
 
         // viewImageData(imageData);
 
         assert imageData != null;
+        // Call methods by passing in the loaded image data.
         int[][] trimmed = trimBorders(imageData, 60);
         int[][] negative = negativeColor(imageData);
         int[][] stretchedHImg = stretchHorizontally(imageData);
@@ -37,6 +38,7 @@ public class ImageProcessing {
         int[][] invertedImg = invertImage(imageData);
         int[][] coloredImg = colorFilter(imageData, -75, 30, -30);
 
+        // Storing the returned modified image data into a new 2D array of ints.
         twoDToImage(trimmed, "./trimmed_apple.jpg");
         twoDToImage(negative, "./negative_apple.jpg");
         twoDToImage(stretchedHImg, "./stretched_apple.jpg");
@@ -50,9 +52,9 @@ public class ImageProcessing {
 
         // Painting with pixels
 
+        int[] rgba = { 255, 255, 0, 255 };
         int[][] blankImg = new int[500][500];
         int[][] randomImg = paintRandomImage(blankImg);
-        int[] rgba = { 255, 255, 0, 255 };
         int[][] rectangleImg = paintRectangle(randomImg, 200, 200, 100, 100, getColorIntValFromRGBA(rgba));
         int[][] generatedRectangles = generateRectangles(randomImg, 1000);
 
@@ -61,10 +63,20 @@ public class ImageProcessing {
         twoDToImage(generatedRectangles, "./generated_rect.jpg");
     }
 
+    // ***************************************************************************************************
+
     // Image Processing Methods
 
+    /**
+     * This methdos accepts a 2D array of int pixel data and the number of
+     * pixels to trim off of the borders of the image.
+     * 
+     * @param imageTwoD  given 2D array of integers.
+     * @param pixelCount integer counter.
+     * @return modified image of 2D array.
+     */
+
     public static int[][] trimBorders(int[][] imageTwoD, int pixelCount) {
-        // Example Method
         if (imageTwoD.length > pixelCount * 2 && imageTwoD[0].length > pixelCount * 2) {
             int[][] trimmedImg = new int[imageTwoD.length - pixelCount * 2][imageTwoD[0].length - pixelCount * 2];
             for (int i = 0; i < trimmedImg.length; i++) {
@@ -77,39 +89,69 @@ public class ImageProcessing {
         }
     }
 
+    /**
+     * This method will replace the color of each pixel in the image with the
+     * negative version of the pixel.
+     * 
+     * @param imageTwoD given 2D array of integers.
+     * @return manipulated image.
+     */
+
     public static int[][] negativeColor(int[][] imageTwoD) {
-        // TODO: Fill in the code for this method
+        // Create new 2D array of ints to hold the modified image data.
         int[][] manipulatedImg = new int[imageTwoD.length][imageTwoD[0].length];
         for (int i = 0; i < imageTwoD.length; i++) {
             for (int j = 0; j < imageTwoD[i].length; j++) {
                 int[] rgba = getRGBAFromPixel(imageTwoD[i][j]);
+                // Sets first three elements to 255 minus itself.
                 rgba[0] = 255 - rgba[0];
                 rgba[1] = 255 - rgba[1];
                 rgba[2] = 255 - rgba[2];
+                // Gets hexidecimal pixel data from the RGBA array.
+                // Stores value in the new image created.
                 manipulatedImg[i][j] = getColorIntValFromRGBA(rgba);
             }
         }
         return manipulatedImg;
     }
 
+    /**
+     * This method will double the width of the provided image data.
+     * For every pixel in the original image, you will copy it and place two
+     * duplicate pixels side-by-side into the new modified image.
+     * 
+     * @param imageTwoD given 2D array of integers.
+     * @return modified image.
+     */
+
     public static int[][] stretchHorizontally(int[][] imageTwoD) {
-        // TODO: Fill in the code for this method
+        // Create new 2D array of ints to hold the modified image data.
         int[][] manipulatedImg = new int[imageTwoD.length][imageTwoD[0].length * 2];
-        int it = 0;
+        int k = 0; // Keeps track of current position for modified image.
+        // Iterate through every pixel in the input image using row-major order.
         for (int i = 0; i < imageTwoD.length; i++) {
             for (int j = 0; j < imageTwoD[i].length; j++) {
-                it = j * 2;
-                manipulatedImg[i][it] = imageTwoD[i][j];
-                manipulatedImg[i][it + 1] = imageTwoD[i][j];
+                k = j * 2; // Column index iterator.
+                manipulatedImg[i][k] = imageTwoD[i][j]; // Copy current pixel position.
+                manipulatedImg[i][k + 1] = imageTwoD[i][j]; // Copy current pixel from the input image.
             }
         }
         return manipulatedImg;
     }
 
+    /**
+     * This method will be halfing the height of the image and selecting every other
+     * pixel down each column to place in the modified image.
+     * 
+     * @param imageTwoD given 2D array of integers.
+     * @return modified image.
+     */
+
     public static int[][] shrinkVertically(int[][] imageTwoD) {
-        // TODO: Fill in the code for this method
+        // Create new 2D array of ints having half the number of rows of input image
+        // and the same number of columns.
         int[][] manipulatedImg = new int[imageTwoD.length / 2][imageTwoD[0].length];
-        int it = 0;
+        // Iterate through every pixel in the input image using column-major order.
         for (int i = 0; i < imageTwoD[0].length; i++) {
             for (int j = 0; j < imageTwoD.length - 1; j += 2) {
                 manipulatedImg[j / 2][i] = imageTwoD[j][i];
@@ -118,61 +160,110 @@ public class ImageProcessing {
         return manipulatedImg;
     }
 
+    /**
+     * This method inverts the input image by flipping the image vertically and
+     * horizontally.
+     * 
+     * @param imageTwoD given 2D array of integers.
+     * @return modified image.
+     */
+
     public static int[][] invertImage(int[][] imageTwoD) {
-        // TODO: Fill in the code for this method
+        // Create new 2D array with same size of input image.
         int[][] invertedImg = new int[imageTwoD.length][imageTwoD[0].length];
+        // Iterate through each pixel in the input image.
         for (int i = 0; i < imageTwoD.length; i++) {
             for (int j = 0; j < imageTwoD[i].length; j++) {
+                // Similar logic to negativeColor() but take negative of pixel positions
+                // instead of the color values.
                 invertedImg[i][j] = imageTwoD[(imageTwoD.length - 1) - i][(imageTwoD[i].length - 1) - j];
             }
         }
         return invertedImg;
     }
 
+    /**
+     * This method modifies every pixel in the image by provided R, G, and B values
+     * as input parameters. You must make sure that each color value does not leave
+     * the range of 0-255.
+     * 
+     * @param imageTwoD        given 2D array of integers.
+     * @param redChangeValue   how much to change the red value by.
+     * @param greenChangeValue how much to change the green value by.
+     * @param blueChangeValue  how much to change the blue value by.
+     * @return modified image.
+     */
+
     public static int[][] colorFilter(int[][] imageTwoD, int redChangeValue, int greenChangeValue,
             int blueChangeValue) {
-        // TODO: Fill in the code for this method
+        // Create new 2D array with same size of input image.
         int[][] manipulatedImg = new int[imageTwoD.length][imageTwoD[0].length];
         for (int i = 0; i < imageTwoD.length; i++) {
             for (int j = 0; j < imageTwoD[i].length; j++) {
+                // Extract RGBA color values.
                 int[] rgba = getRGBAFromPixel(imageTwoD[i][j]);
 
+                // Store calues of each color plus the modifier value.
                 int newRed = rgba[0] + redChangeValue;
                 int newGreen = rgba[1] + greenChangeValue;
                 int newBlue = rgba[2] + blueChangeValue;
 
-                if (newRed > 255) {
+                // Makes sure that new color values do not go out of range (0-255).
+                if (newRed > 255 && newGreen > 255 && newBlue > 255) {
                     newRed = 255;
-                } else if (newRed < 0) {
-                    newRed = 0;
-                }
-
-                if (newGreen > 255) {
                     newGreen = 255;
-                } else if (newGreen < 0) {
-                    newGreen = 0;
-                }
-
-                if (newBlue > 255) {
                     newBlue = 255;
-                } else if (newBlue < 0) {
+                } else if (newRed < 0 && newGreen < 0 && newBlue < 0) {
+                    newRed = 0;
+                    newGreen = 0;
                     newBlue = 0;
-                }
 
+                } else {
+
+                }
+                // if (newRed > 255) {
+                // newRed = 255;
+                // } else if (newRed < 0) {
+                // newRed = 0;
+                // }
+
+                // if (newGreen > 255) {
+                // newGreen = 255;
+                // } else if (newGreen < 0) {
+                // newGreen = 0;
+                // }
+
+                // if (newBlue > 255) {
+                // newBlue = 255;
+                // } else if (newBlue < 0) {
+                // newBlue = 0;
+                // }
+
+                // Set values in RGBA array to new color values calculated.
                 rgba[0] = newRed;
                 rgba[1] = newGreen;
                 rgba[2] = newBlue;
 
+                // Convert RGBA array to sinle int containing hexadecimal pixel data
+                // using provided method and store it in the new image.
                 manipulatedImg[i][j] = getColorIntValFromRGBA(rgba);
             }
         }
         return manipulatedImg;
     }
 
+    // ***************************************************************************************************
+
     // Painting Methods
 
+    /**
+     * 
+     * 
+     * @param canvas
+     * @return
+     */
+
     public static int[][] paintRandomImage(int[][] canvas) {
-        // TODO: Fill in the code for this method
         Random rand = new Random();
         for (int i = 0; i < canvas.length; i++) {
             for (int j = 0; j < canvas[i].length; j++) {
@@ -183,9 +274,20 @@ public class ImageProcessing {
         return canvas;
     }
 
+    /**
+     * 
+     *
+     * @param canvas
+     * @param width
+     * @param height
+     * @param rowPosition
+     * @param colPosition
+     * @param color
+     * @return
+     */
+
     public static int[][] paintRectangle(int[][] canvas, int width, int height, int rowPosition, int colPosition,
             int color) {
-        // TODO: Fill in the code for this method
         for (int i = 0; i < canvas.length; i++) {
             for (int j = 0; j < canvas[i].length; j++) {
                 if (i >= rowPosition && i <= rowPosition + width) {
@@ -198,8 +300,15 @@ public class ImageProcessing {
         return canvas;
     }
 
+    /**
+     * 
+     * 
+     * @param canvas
+     * @param numRectangles
+     * @return
+     */
+
     public static int[][] generateRectangles(int[][] canvas, int numRectangles) {
-        // TODO: Fill in the code for this method
         Random rand = new Random();
         for (int i = 0; i < numRectangles; i++) {
             int randomWidth = rand.nextInt(canvas[0].length);
@@ -322,6 +431,18 @@ public class ImageProcessing {
      * This method is used to view the structure of the image data in both rax pixel
      * form and the extracted RGBA form.
      * 
+     * Call to viewImageData(imageData); in main method below:
+     * 
+     * Raw pixel data from the top left corner:
+     * [[-4592897, -4592897, -4592897],
+     * [-4592897, -4592897, -4592897],
+     * [-4592897, -4592897, -4592897]]
+     * 
+     * Extracted RGBA pixel data from top the left corner:
+     * [[185, 234, 255, 255], [185, 234, 255, 255], [185, 234, 255, 255]]
+     * [[185, 234, 255, 255], [185, 234, 255, 255], [185, 234, 255, 255]]
+     * [[185, 234, 255, 255], [185, 234, 255, 255], [185, 234, 255, 255]]
+     * 
      * @param imageTwoD 2D array of integers extracting a 3x3 section from bottom to
      *                  top left of the image.
      */
@@ -332,7 +453,7 @@ public class ImageProcessing {
             for (int i = 0; i < 3; i++) {
                 System.arraycopy(imageTwoD[i], 0, rawPixels[i], 0, 3);
             }
-            System.out.println("Raw pixel data from the top left corner.");
+            System.out.println("Raw pixel data from the top left corner:");
             System.out.print(Arrays.deepToString(rawPixels).replace("],", "],\n") + "\n");
 
             int[][][] rgbPixels = new int[3][3][4];
@@ -342,7 +463,7 @@ public class ImageProcessing {
                 }
             }
             System.out.println();
-            System.out.println("Extracted RGBA pixel data from top the left corner.");
+            System.out.println("Extracted RGBA pixel data from top the left corner:");
 
             for (int[][] row : rgbPixels) {
                 System.out.print(Arrays.deepToString(row) + System.lineSeparator());
