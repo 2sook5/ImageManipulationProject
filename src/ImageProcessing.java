@@ -68,7 +68,7 @@ public class ImageProcessing {
     // Image Processing Methods
 
     /**
-     * This methdos accepts a 2D array of int pixel data and the number of
+     * This method accepts a 2D array of int pixel data and the number of
      * pixels to trim off of the borders of the image.
      * 
      * @param imageTwoD  given 2D array of integers.
