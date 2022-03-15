@@ -28,8 +28,6 @@ public class ImageProcessing {
         int[][] imageData = imgToTwoD(
                 "https://content.codecademy.com/projects/project_thumbnails/phaser/bug-dodger.png");
 
-        // viewImageData(imageData);
-
         assert imageData != null;
         // Call methods by passing in the loaded image data.
         int[][] trimmed = trimBorders(imageData, 60);
