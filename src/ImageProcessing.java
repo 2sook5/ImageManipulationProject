@@ -22,6 +22,7 @@ public class ImageProcessing {
      * 
      * @param args
      */
+
     public static void main(String[] args) {
         // Load image using URL.
         int[][] imageData = imgToTwoD(
@@ -50,8 +51,7 @@ public class ImageProcessing {
         // stretchHorizontally(shrinkVertically(colorFilter(negativeColor(trimBorders(invertImage(imageData),
         // 50)), 200, 20, 40)));
 
-        // Painting with pixels
-
+        // Painting with pixels.
         int[] rgba = { 255, 255, 0, 255 };
         int[][] blankImg = new int[500][500];
         int[][] randomImg = paintRandomImage(blankImg);
@@ -209,35 +209,16 @@ public class ImageProcessing {
                 int newBlue = rgba[2] + blueChangeValue;
 
                 // Makes sure that new color values do not go out of range (0-255).
-                if (newRed > 255 && newGreen > 255 && newBlue > 255) {
+                if (newRed > 255 || newGreen > 255 || newBlue > 255) {
                     newRed = 255;
                     newGreen = 255;
                     newBlue = 255;
-                } else if (newRed < 0 && newGreen < 0 && newBlue < 0) {
+                } else if (newRed < 0 || newGreen < 0 || newBlue < 0) {
                     newRed = 0;
                     newGreen = 0;
                     newBlue = 0;
 
-                } else {
-
                 }
-                // if (newRed > 255) {
-                // newRed = 255;
-                // } else if (newRed < 0) {
-                // newRed = 0;
-                // }
-
-                // if (newGreen > 255) {
-                // newGreen = 255;
-                // } else if (newGreen < 0) {
-                // newGreen = 0;
-                // }
-
-                // if (newBlue > 255) {
-                // newBlue = 255;
-                // } else if (newBlue < 0) {
-                // newBlue = 0;
-                // }
 
                 // Set values in RGBA array to new color values calculated.
                 rgba[0] = newRed;
@@ -257,16 +238,19 @@ public class ImageProcessing {
     // Painting Methods
 
     /**
+     * This method will modify the image passed in by replacing every pixel with a
+     * randomly colored pixel.
      * 
-     * 
-     * @param canvas
-     * @return
+     * @param canvas 2D array of integers.
+     * @return modified image.
      */
 
     public static int[][] paintRandomImage(int[][] canvas) {
         Random rand = new Random();
+        // Iterate through each pixel in provided image.
         for (int i = 0; i < canvas.length; i++) {
             for (int j = 0; j < canvas[i].length; j++) {
+                // Generates a randomly colored pixel.
                 int[] rgba = { rand.nextInt(256), rand.nextInt(256), rand.nextInt(256), 255 };
                 canvas[i][j] = getColorIntValFromRGBA(rgba);
             }
@@ -275,25 +259,24 @@ public class ImageProcessing {
     }
 
     /**
-     * 
+     * This method draws a rectangle on an image with the below parameters.
      *
-     * @param canvas
-     * @param width
-     * @param height
-     * @param rowPosition
-     * @param colPosition
-     * @param color
-     * @return
+     * @param canvas      2D array of integers.
+     * @param w           width of the rectangle.
+     * @param h           height of the rectangle.
+     * @param rowPosition from rectangle to the row edge of image.
+     * @param colPosition from rectangle to the column edge of image.
+     * @param color       retangles color.
+     * @return modified image.
      */
 
-    public static int[][] paintRectangle(int[][] canvas, int width, int height, int rowPosition, int colPosition,
+    public static int[][] paintRectangle(int[][] canvas, int w, int h, int rowPosition, int colPosition,
             int color) {
+        // Iterate through each pixel in input image.
         for (int i = 0; i < canvas.length; i++) {
             for (int j = 0; j < canvas[i].length; j++) {
-                if (i >= rowPosition && i <= rowPosition + width) {
-                    if (j >= colPosition && j <= colPosition + height) {
-                        canvas[i][j] = color;
-                    }
+                if (i >= rowPosition && i <= rowPosition + w && j >= colPosition && j <= colPosition + h) {
+                    canvas[i][j] = color;
                 }
             }
         }
@@ -301,15 +284,18 @@ public class ImageProcessing {
     }
 
     /**
-     * 
+     * This method will generate ranomly positioned, sized, and colored rectangles
+     * based on the provided random number.
      * 
      * @param canvas
-     * @param numRectangles
-     * @return
+     * @param numRectangles deteremines how many randomly generated rectangles will
+     *                      be placed in the image.
+     * @return modified image.
      */
 
     public static int[][] generateRectangles(int[][] canvas, int numRectangles) {
         Random rand = new Random();
+        // Iterate for the number of rectangles provided.
         for (int i = 0; i < numRectangles; i++) {
             int randomWidth = rand.nextInt(canvas[0].length);
             int randomHeight = rand.nextInt(canvas.length);
@@ -327,10 +313,11 @@ public class ImageProcessing {
     // Utility Methods
 
     /**
-     * This method accepts a 2D array of integers and a String for the file name.
-     * It converts the 2D array of int pixel data into an image and saves it.
+     * This method accepts a String which can be a file path or image URL. It
+     * returns a 2D array of integers that contains every pixel from the image
+     * stored as int hexadecimal values containing the RGBA values for the pixel.
      * 
-     * @param input the input being a file path or an image URL.
+     * @param input a file path or an image URL.
      * @return pixel data into an image and saves it.
      */
 
@@ -357,19 +344,19 @@ public class ImageProcessing {
                     pixelData[i][j] = image.getRGB(j, i);
                 }
             }
-
             return pixelData;
         } catch (Exception e) {
             System.out.println("Failed to load image: " + e.getLocalizedMessage());
-            return null;
+            return new int[0][0];
         }
     }
 
     /**
-     * This method
+     * This method accepts a 2D array of integers and a String for the file name.
+     * Converts the 2D array of int pixel data into an image and saves it.
      * 
-     * @param imgData
-     * @param fileName
+     * @param imgData  2D array of integers for the image data.
+     * @param fileName Name of the file that will be used.
      */
 
     public static void twoDToImage(int[][] imgData, String fileName) {
