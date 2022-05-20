@@ -26,7 +26,7 @@ public class ImageProcessing {
     public static void main(String[] args) {
         // Load image using URL.
         int[][] imageData = imgToTwoD(
-                "https://content.codecademy.com/projects/project_thumbnails/phaser/bug-dodger.png");
+                "https://file-examples.com/storage/feb04797b46286b5ea5f061/2017/10/file_example_JPG_1MB.jpg");
 
         assert imageData != null;
         // Call methods by passing in the loaded image data.
@@ -38,12 +38,12 @@ public class ImageProcessing {
         int[][] coloredImg = colorFilter(imageData, -75, 30, -30);
 
         // Storing the returned modified image data into a new 2D array of ints.
-        twoDToImage(trimmed, "./trimmed_apple.jpg");
-        twoDToImage(negative, "./negative_apple.jpg");
-        twoDToImage(stretchedHImg, "./stretched_apple.jpg");
-        twoDToImage(shrankVImg, "./shrank_apple.jpg");
-        twoDToImage(invertedImg, "./inverted_apple.jpg");
-        twoDToImage(coloredImg, "./colored_apple.jpg");
+        twoDToImage(trimmed, "./trimmed_img.jpg");
+        twoDToImage(negative, "./negative_img.jpg");
+        twoDToImage(stretchedHImg, "./stretched_img.jpg");
+        twoDToImage(shrankVImg, "./shrank_img.jpg");
+        twoDToImage(invertedImg, "./inverted_img.jpg");
+        twoDToImage(coloredImg, "./colored_img.jpg");
 
         // int[][] allFilters =
         // stretchHorizontally(shrinkVertically(colorFilter(negativeColor(trimBorders(invertImage(imageData),
@@ -66,7 +66,7 @@ public class ImageProcessing {
     // Image Processing Methods
 
     /**
-     * This method accepts a 2D array of int pixel data and the number of
+     * This method accepts a 2D array of integer pixel data and the number of
      * pixels to trim off of the borders of the image.
      * 
      * @param imageTwoD  given 2D array of integers.
@@ -322,11 +322,11 @@ public class ImageProcessing {
     public static int[][] imgToTwoD(String input) {
         try {
             BufferedImage image = null;
-            if (input.substring(0, 4).toLowerCase().equals("http")) {
+            if (input.substring(0, 4).equals("http")) {
                 URL imageUrl = new URL(input);
                 image = ImageIO.read(imageUrl);
                 if (image == null) {
-                    System.out.println("Failed to get image from provided URL.");
+                    System.err.println("Failed to get image from provided URL.");
                 }
             } else {
                 image = ImageIO.read(new File(input));
@@ -344,7 +344,7 @@ public class ImageProcessing {
             }
             return pixelData;
         } catch (Exception e) {
-            System.out.println("Failed to load image: " + e.getLocalizedMessage());
+            System.err.println("Failed to load image: " + e.getLocalizedMessage());
             return new int[0][0];
         }
     }
@@ -372,7 +372,7 @@ public class ImageProcessing {
             File output = new File(fileName);
             ImageIO.write(result, "jpg", output);
         } catch (Exception e) {
-            System.out.println("Failed to save image: " + e.getLocalizedMessage());
+            System.err.println("Failed to save image: " + e.getLocalizedMessage());
         }
     }
 
@@ -407,7 +407,7 @@ public class ImageProcessing {
             Color color = new Color(colorData[0], colorData[1], colorData[2], colorData[3]);
             return color.getRGB();
         } else {
-            System.out.println("Incorrect number of elements in RGBA array.");
+            System.err.println("Incorrect number of elements in RGBA array.");
             return -1;
         }
     }
@@ -454,7 +454,7 @@ public class ImageProcessing {
                 System.out.print(Arrays.deepToString(row) + System.lineSeparator());
             }
         } else {
-            System.out.println("The image is not large enough to extract 9 pixels from the top left corner");
+            System.err.println("The image is not large enough to extract 9 pixels from the top left corner");
         }
     }
 }
